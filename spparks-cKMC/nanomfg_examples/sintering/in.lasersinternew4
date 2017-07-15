@@ -1,0 +1,140 @@
+# SPPARKS laser sintering model test
+
+seed	        12345
+
+app_style       erbium
+
+lattice        fcc/octa/tetra 1.0
+###lattice         fcc 1.0
+
+#old
+region		box block 0 25 0 5 0 5
+create_box	box
+###create_sites	box value i1 0 basis 1*4 1
+create_sites	box value i1 0 basis 1*4 1 basis 5*8 2 basis 9* 3
+
+#new
+#region		tube cylinder x 4 4 4 0 50
+#create_box 	tube
+#create_sites	box value i1 0 basis 1*4 1
+
+add_species	vac
+add_species 	air
+add_species 	NP
+add_species	NP_ex
+
+#control_species		Ga_src	0.2  Ga+ 1.0 0.0 0.0	1 12,m
+#control_species		mold1	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+#control_species		mold2	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+
+#old
+#set		i2 value 0 if i1 = 1 if x <= 30
+#set 		i2 value 1 if i1 = 1 if x > 30 fraction 0.8
+#set 		i2 value 2 if i1 = 1 if x > 30 fraction 0.2
+
+#new
+###set		i2 value 0 if i1 = 1 if x <= 15 fraction 0.9
+set		i2 value 0
+set 		i2 value 1 if i1 = 1 if x <= 15 fraction 0.1
+###set 		i2 value 0 if i1 = 1 if x > 15 fraction 0.1
+#set 		i2 value 1 if i1 = 1 if x > 15 fraction 0.6
+set 		i2 value 2 if i1 = 1 if x > 15 fraction 0.3
+# set 		i2 value 3 if i1 = 1
+
+sector		yes
+solve_style     tree 
+
+# define variables
+variable 	constant equal 1
+variable 	rate_T equal 0.07662
+# sintering rates
+variable 	rate_1 equal ${rate_T}
+variable 	rate_2 equal ${rate_T}
+variable 	rate_3 equal ${rate_T}
+variable 	rate_4 equal ${rate_T}
+variable 	rate_5 equal ${rate_T}
+#variable 	rate_6 equal ${rate_T}
+#diffusion rates
+variable 	rate_7 equal 0.9997
+variable 	rate_8 equal 0.9997
+variable 	rate_9 equal 0.9997
+variable 	rate_10 equal 0.9997
+variable 	rate_11 equal 0.9997
+#variable 	rate_12 equal 0.9997
+variable 	rate_13 equal 0.9997
+# sintering+diffusion rates
+variable 	rate_14 equal ${rate_T}
+variable 	rate_15 equal ${rate_T}
+variable 	reverse_const equal 1.5
+variable 	reverse_rate_14 equal ${rate_14}*${reverse_const}
+variable 	reverse_rate_15 equal ${rate_15}*${reverse_const}
+
+#variable 	temperature equal (8.617E-5)*283
+variable 	temperature equal 10
+#10 C 283 K
+
+# single-site, double-site, triple-site events
+
+# laser sintering
+#event		1 fcc NP ${rate_1} NP_ex
+#event 		2 fcc fcc NP air ${rate_2} NP_ex air 
+#event		2 fcc fcc NP_ex NP ${rate_3} NP NP_ex
+#event		2 fcc fcc NP_ex NP ${rate_4} NP_ex NP_ex
+#event		3 fcc fcc fcc NP NP_ex NP_ex ${rate_5} NP_ex NP_ex NP_ex
+#event		4 fcc fcc fcc fcc NP NP_ex NP_ex NP_ex ${rate_6} NP_ex NP_ex NP_ex NP_ex
+
+# reverse reaction of laser sintering
+#event		1 fcc NP_ex ${rate_1}*${reverse_const} NP
+#event 		2 fcc fcc NP_ex air ${rate_2}*${reverse_const} NP air
+#event		2 fcc fcc NP NP_ex ${rate_3}*${reverse_const} NP_ex NP
+#event		2 fcc fcc NP_ex NP_ex ${rate_4}*${reverse_const} NP_ex NP
+#event		3 fcc fcc fcc NP_ex NP_ex NP_ex ${rate_5}*${reverse_const} NP NP_ex NP_ex
+#event 		4 fcc fcc fcc fcc NP_ex NP_ex NP_ex NP_ex ${rate_6}*${reverse_const} NP NP_ex NP_ex NP_ex
+
+# diffusion
+event		2 fcc fcc air vac ${rate_7} vac air
+event		2 fcc fcc NP vac ${rate_8} vac NP
+#event 		2 fcc fcc NP_ex vac ${rate_9} vac NP_ex
+#event 		3 fcc fcc fcc NP air vac ${rate_10} vac NP air
+#event 		3 fcc fcc fcc NP_ex NP_ex vac ${rate_10} vac NP_ex NP_ex
+#event		4 fcc fcc fcc fcc air NP_ex NP_ex vac ${rate_11} vac air NP_ex NP_ex
+#event		4 fcc fcc fcc fcc NP_ex NP_ex vac vac ${rate_12} vac vac NP_ex NP_ex
+#event		4 fcc fcc fcc fcc NP_ex NP_ex NP_ex vac ${rate_13} vac NP_ex NP_ex NP_ex
+
+# diffusion + laser sinter
+event 		2 fcc oct NP vac ${rate_14} vac NP_ex
+event 		3 fcc fcc oct air NP vac ${rate_15} vac air NP_ex
+
+# reverse reaction of diffusion +lasersintering
+##event 		2 fcc fcc vac NP_ex ${rate_14}*${reverse_const} NP vac
+event 		2 oct fcc NP_ex vac ${reverse_rate_14} vac NP
+##event 		3 fcc fcc fcc vac air NP_ex ${rate_15}*${reverse_const} air NP vac
+event 		3 fcc fcc oct vac air NP_ex ${reverse_rate_15} air NP vac
+
+# reverse reaction of diffusion, if added, too many events are related, simulation time will become too long, also it has very low possibility
+
+# control_event count starts from 0
+#control_event	2 	6	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+#control_event	2 	7	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	2 	8	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+control_event	2 	0	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+control_event	2 	1	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+#control_event	4 	0	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	4 	1	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	2 	10	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	2 	11	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	3 	4	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+
+# temperature in units of eV
+# temperature sensitivity test
+temperature	${temperature}
+
+#diag_style      erbium stats yes &
+#		list air NP NP_ex vac events s1 d1 d2 d3 t1 q1 s2 d4 d5 d6 t2 q2 d7 d8 t3 t4 q3 q4 q5 d9 t5 
+diag_style      erbium stats yes &
+		list air NP NP_ex vac events d1 d2 d3 t1 d4 t2 #d3 d4 d5 d6 d7 d8 d9 t1 # d10 t2 d11 t3 
+
+stats           0.1
+dump            dump1 1.0 dump.laser.lammpstrj id i2 x y z
+
+run             1.0

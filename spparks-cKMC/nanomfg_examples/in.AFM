@@ -1,0 +1,68 @@
+# SPPARKS Top-Down nanomanufacturing model test
+
+seed	        12345
+
+app_style       erbium
+
+#lattice         fcc/octa/tetra 1.0
+lattice         fcc 1.0
+
+region		box block 0 12 0 12 0 12
+create_box	box
+#create_sites	box value i1 0 basis 1*4 1 basis 5*8 2 basis 9* 3
+create_sites	box value i1 0 basis 1*4 1
+
+add_species		vac
+add_species 	Substrate
+add_species 	Cu
+add_species		Cu_gas
+add_species		Cu_ctrl
+add_species		Cu_prt
+add_species		Absorb
+
+control_species		Cu_ctrl	1.0 Cu_prt 1.0 0.0 0.0 	1 3 0
+
+set	i2 value 0
+set	i2 value 1 if i1 = 1 if y < 2
+set i2 value 2 if i1 = 1 if y >= 2 if y < 7
+set i2 value 4 if i1 = 1 if y > 3 if y < 7 if x > 0 if z > 8
+set i2 value 5 if i1 = 1 if y > 3 if y < 7 if x = 0 if z > 8 
+set i2 value 6 if y >= 11.5
+set i2 value 6 if y >= 7 if x = 11.5
+set i2 value 6 if y >= 9 if x = 0
+set i2 value 6 if y >= 9 if z = 0
+#set i2 value 6 if y >= 9 if z = 11.5
+
+sector		yes
+solve_style     tree 
+#solve_style     linear 
+
+# single-site, double-site, triple-site events
+
+event		1 fcc Cu_prt 1.0 vac
+event		2 fcc fcc Cu_gas vac 0.1 vac Cu_gas
+
+event		2 fcc fcc Cu_prt vac 0.001 vac Cu_prt
+
+event		2 fcc fcc Cu_prt Absorb 1e-12 vac Absorb
+event		2 fcc fcc Cu_gas Absorb 1e-12 vac Absorb
+
+event		3 fcc fcc fcc Cu Cu vac 10.0 Cu vac Cu_gas
+
+event		4 fcc fcc fcc fcc Cu_prt Cu vac vac 4.0 vac Cu_prt vac Cu_gas
+
+event		4 fcc fcc fcc fcc Cu_gas Cu Cu Cu 1.0 Cu Cu Cu Cu
+event		4 fcc fcc fcc fcc Cu_prt Cu Cu Cu 1.0 Cu Cu Cu Cu
+
+
+# temperature in units of eV
+
+temperature	1.0
+
+diag_style      erbium stats yes &
+		list Substrate Cu Cu_gas Cu_ctrl Cu_prt vac events s1 d1 d2 d3 d4 t1 q1 q2 q3 c1
+
+stats           3.0
+dump            dump1 3.0 dump.AFM id i2 x y z
+
+run             6.0

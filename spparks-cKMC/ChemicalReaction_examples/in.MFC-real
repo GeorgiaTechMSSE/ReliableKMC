@@ -1,0 +1,61 @@
+# SPPARKS chemistry application
+# microbial fuel cell
+#  based on the paper:
+# Picioreanu C., van Loosdrencht M.C.M., Curtis T.P., and Scott K. (2010)
+# 	"Model  based evaluation of the effect of pH and electrode geometry on microbial 
+#  	 fuel cell performance". Bioelectrochemistry, 78(1): 8-24
+
+seed		12345
+
+app_style	chemistry
+solve_style	linear
+
+volume		1.0e-22
+
+add_species		H2O
+add_species		OH-
+add_species		H+
+add_species		CO2
+add_species		HCO3-
+add_species		AcH
+add_species		Ac-
+add_species		MH+
+add_species		MH2
+add_species		MH3+
+add_species		MH4+2
+add_species		NH4+
+add_species		Xac
+add_species		e-
+add_species		H_+
+add_species		e_-
+add_species		O2_
+add_species		H2O_
+add_species		OH_-
+add_species		power
+
+
+
+add_reaction	1 H2O		 	   	10e7 		10e7	OH-		H+
+add_reaction	2 CO2 	 	H2O		10e7 		10e7	HCO3-	H+
+add_reaction	3 AcH 				10e7		10e7	Ac-		H+
+add_reaction	4 MH3+ 	 			10e7		10e7	MH2		H+		 	
+add_reaction	5 MH4+2				10e7		10e7 	MH2		H+
+add_reaction	6 MH+		H2O 	10e7		10e7	MH3+	H+
+add_reaction	7 MH4+2 			10e6		10e6	MH+ 	H+ 	H+	H+	e-	e-
+add_reaction	8 MH3+ 	 			10e6		10e6 	MH+ 	H+	H+	e-	e-
+add_reaction	9 MH2				10e6		10e6 	MH+		H+	e-	e-
+add_reaction   10 H+				10e7		10e7 	H_+ 
+add_reaction   11 e-				10e5		10e5 	e_-		power	
+add_reaction   12 H_+	e_-			10e7		10e7	H2O_
+add_reaction   13 e_-	H2O_		10e7		10e7	OH_-
+
+
+count		H2O 	1000
+count		CO2		10
+count		AcH		10
+count		MH3+	10
+count		MH4+2	10
+
+stats       20
+
+run		5000

@@ -1,0 +1,35 @@
+# mac_mpi = Apple PowerBook G4 laptop, Finked LAM/MPI
+
+SHELL = /bin/sh
+
+# System-specific settings
+
+CC =		mpic++
+CCFLAGS =	-g -O -MMD -DOMPI_SKIP_MPICXX
+LINK =		mpic++
+LINKFLAGS =	-g -O
+USRLIB =
+SYSLIB = 
+SIZE =		size
+
+# Test rule
+
+test:
+	mpirun -np 1 $(EXE) < $(INPUTFILE)
+
+# Link rule
+
+$(EXE):	$(OBJ)
+	$(LINK) $(LINKFLAGS) $(OBJ) $(USRLIB) $(SYSLIB) -o $(EXE)
+	$(SIZE) $(EXE)
+
+# Compilation rules
+
+
+%.o:%.cpp
+	$(CC) $(CCFLAGS) -c $<
+
+# Individual dependencies
+
+DEPENDS = $(OBJ:.o=.d)
+-include $(DEPENDS)

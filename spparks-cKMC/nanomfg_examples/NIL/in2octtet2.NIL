@@ -1,0 +1,188 @@
+# SPPARKS Top-Down nanomanufacturing model test - Nanoimprint Lithography
+
+seed	        12345
+
+app_style       erbium
+
+#lattice			 sc/26n 1.0
+lattice         fcc/octa/tetra 1.0
+###lattice         bcc 1.0
+
+region		box block 0 30.0 0 31.0 0 30.0
+create_box	box
+
+#create_sites	box value i1 0 basis 1*4 1
+create_sites	box value i1 0 basis 1*4 1 basis 5*8 2 basis 9* 3
+###create_sites	box value i1 0 basis 1*4 1 basis 5*8 2
+
+add_species		vac		#0
+add_species 		substrate	#1
+add_species		resist		#2
+add_species		resist_k	#3
+add_species		mold1		#4
+add_species		mold2		#5
+add_species		path1		#6
+add_species		path2		#7
+add_species		path1_active 	#8
+add_species		Absorb		#9
+
+#### dump2a, dump2b, dump2c
+control_species		path1	1.6  path1_active 		0.0 -1.0 0.0 	1 26 0.0
+control_species		path2	1.6  mold2 			0.0 -1.0 0.0 	1 26 0.0
+control_species		mold1	1.6  vac 			0.0 1.0 0.0 	1 26 20.0
+control_species		mold2	1.6  vac 			0.0 1.0 0.0 	1 26 20.0
+
+#### dump2
+###control_species		path1	0.4  path1_active 	0.0 -1.0 0.0 	1 26 0.0
+###control_species		path2	0.4  mold2 			0.0 -1.0 0.0 	1 26 0.0
+###control_species		mold1	0.4  vac 			0.0 1.0 0.0 	1 26 25.0
+###control_species		mold2	0.4  vac 			0.0 1.0 0.0 	1 26 25.0
+
+
+set	i2 value 0
+set	i2 value 1 if i1 = 1 if y <= .2 
+set	i2 value 2 if i1 = 1 if y > .2 if y <= 15.0 
+##set i2 value 5 if i1 = 1 if y > 52.0 if y <= 70.0
+set i2 value 7 if i1 = 1 if y > 24.0 if y <= 30.0
+
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 14.0 if x <= 16.0 if z >= 6.0 if z <= 24.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 13.0 if x <= 17.0 if z >= 7.0 if z <= 23.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 12.0 if x <= 18.0 if z >= 8.0 if z <= 22.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 11.0 if x <= 19.0 if z >= 9.0 if z <= 21.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 10.0 if x <= 20.0 if z >= 10.0 if z <= 20.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 9.0 if x <= 21.0 if z >= 11.0 if z <= 19.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 8.0 if x <= 22.0 if z >= 12.0 if z <= 18.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 7.0 if x <= 23.0 if z >= 13.0 if z <= 17.0
+set i2 value 4 if i1 = 1 if y > 15 if y <= 30.0 if x >= 6.0 if x <= 24.0 if z >= 14.0 if z <= 16.0
+
+
+
+#set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 14.0 if x <= 16.0 if z >= 12.0 if z <= 18.0
+#set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 13.0 if x <= 17.0 if z >= 13.0 if z <= 17.0
+#set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 12.0 if x <= 18.0 if z >= 14.0 if z <= 16.0
+#set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 13.0 if x <= 17.0 if z >= 13.0 if z <= 17.0
+#set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 14.0 if x <= 16.0 if z >= 12.0 if z <= 18.0
+##set i2 value 6 if i1 = 1 if y > 9 if y <= 15.0 if x >= 6.0 if x <= 24.0 if z >= 14.8 if z <= 15.2
+
+
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 14.0 if x <= 16.0 if z >= 6.0 if z <= 24.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 13.0 if x <= 17.0 if z >= 7.0 if z <= 23.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 12.0 if x <= 18.0 if z >= 8.0 if z <= 22.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 11.0 if x <= 19.0 if z >= 9.0 if z <= 21.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 10.0 if x <= 20.0 if z >= 10.0 if z <= 20.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 9.0 if x <= 21.0 if z >= 11.0 if z <= 19.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 8.0 if x <= 22.0 if z >= 12.0 if z <= 18.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 7.0 if x <= 23.0 if z >= 13.0 if z <= 17.0
+set i2 value 6 if i1 = 1 if y > 4 if y <= 15.0 if x >= 6.0 if x <= 24.0 if z >= 14.0 if z <= 16.0
+
+
+
+set i2 value 9 if i1 = 1 if y > 30 if y <= 31
+set i2 value 3 if i1 = 1 if x < 1 if y = 17.0 if z < 1
+
+#sector		yes
+sector		no
+
+solve_style     tree 
+#solve_style     linear 
+
+# single-site, double-site, triple-site events
+###################################################################################
+### double-site events
+
+
+### d1 R5 (controlled): settling down of resist_k because of gravity
+event		2 fcc fcc resist_k vac 1e-3 vac resist_k
+
+### d2 R6: boundary
+event		2 fcc fcc Absorb resist_k 1e-12 Absorb vac 
+
+### d3 R7: interaction between mold and resist
+event		2 fcc fcc mold1 resist  0.1 mold1 resist_k 
+
+### d4 R8: interaction between mold and resist
+event		2 fcc fcc mold2 resist  0.1 mold2 resist_k 
+
+### d5 R9: diffusion of high-energy particles
+event		2 oct oct resist_k vac 1e-3 vac resist_k
+
+###  R9: diffusion of mid-energy particles
+##event		2 tet tet resist_k vac 0.1 vac resist_k
+
+### d6 R10: substrate stability
+event		2 fcc fcc substrate resist_k 1e-12 substrate resist
+
+### d7 columns moving downward, resist/mass "squeezed" and transported to towards side
+event		2 fcc oct path1_active vac 1e-12 vac resist_k 
+
+###  columns of mold spills resist_k when moving downward
+##event		2 tet fcc path1_active vac 1e-12 mold1 resist_k 
+
+###################################################################################
+### triple-site events
+
+### t1 (controlled): settling down of resist because of gravity
+event		3 fcc fcc fcc resist vac vac 1e-1 vac resist vac
+
+### t2 R10: columns moving downward, resist/mass "squeezed" and transported to towards side
+event		3 fcc fcc oct mold1 path1_active vac 1e-12 vac resist_k resist_k
+
+### t3 R11: kinetic energy transfer from high-energy particle to mid-energy particle
+event		3 oct fcc fcc resist_k resist vac 1.0 resist_k vac resist
+
+### t4 R12: kinetic energy transfer from high-energy particle to low-energy particle
+event		3 oct fcc fcc resist_k resist vac 1.0 vac resist_k resist_k
+
+### R13: kinetic energy transfer from mid-energy particle to low-energy particle
+##event		3 tet fcc fcc resist_k resist vac 1.0 vac resist_k resist_k
+
+### t5 R14: kinetic energy transfer between resist_k 
+event		3 fcc fcc fcc resist_k resist_k resist 1.0 resist_k resist_k resist_k
+
+### t6 R15: diffusion of low-energy particle resist_k
+event		3 fcc fcc fcc resist_k vac vac 1.0 vac resist_k vac
+
+### t7 R16: coordinated diffusion of high-energy particles resist_k
+event		3 oct fcc oct resist_k resist vac 1.0 vac resist_k resist_k 
+
+### t8 R17: coordinated diffusion of low-energy particle resist_k
+event		3 fcc fcc fcc resist_k resist_k vac 1.0 resist_k vac resist_k
+
+### t9 R18: interaction between mold and resist
+event		3 fcc fcc fcc mold1 vac resist  0.01 mold1 resist_k vac 
+
+### t10 R19: interaction between mold and resist
+event		3 fcc fcc fcc mold2 vac resist  0.1 mold2 resist_k vac 
+
+### t11 R20: cluster formation of resist
+event		3 fcc fcc fcc resist_k resist resist  10.0 resist resist resist 
+
+### t12 R21: cluster formation of resist
+event		3 fcc fcc fcc resist_k resist_k resist  5.0 resist resist resist 
+
+
+###################################################################################
+
+### resist/mass is "squeezed" and transported towards side
+##control_event	2 	0	0.0 0.0 0.0		15.0 15.0 15.0  	-45.0		1 26	
+
+### resist_k moving down towards substrate due to gravity
+control_event	2 	0	0.0 -1.0 0.0	0.0 0.0 0.0  	46	1 26	
+
+### resist moving down towards substrate due to gravity
+control_event	3 	0	0.0 -1.0 0.0	0.0 0.0 0.0  	46	1 26	
+
+
+###################################################################################
+
+# temperature in units of eV
+
+temperature	10.0
+
+diag_style      erbium stats yes &
+			list d1 d2 d3 d4 d5 d6 d7 t1 t2 t3 t4 t5 t6 t7 t8 t9 t10 t11 t12 c1 c2 c3 c4
+
+stats          1.0
+dump           dump2octtet2 10.0 dump2octtet2.NIL id i2 x y z
+
+run            41.0

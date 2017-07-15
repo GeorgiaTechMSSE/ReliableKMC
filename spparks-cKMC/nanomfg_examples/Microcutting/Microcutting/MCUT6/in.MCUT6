@@ -1,0 +1,71 @@
+# SPPARKS Top-Down nanomanufacturing model test
+
+seed	        12345
+
+app_style       erbium
+
+#lattice         fcc/octa/tetra 1.0
+#lattice         fcc 1.0
+#lattice			 sc/26n 1.0
+
+lattice			   sc/26n 1.0
+
+#region		box block 0 2 0 3 0 2
+region		box block 0 1000 0 16 0 3
+create_box	box
+#create_sites	box value i1 0 basis 1*4 1 basis 5*8 2 basis 9* 3
+create_sites	box value i1 0 basis 1*4 1
+
+add_species		vac #0
+add_species		resist #1
+add_species		top #2
+add_species		act_resist #3
+add_species		absorb #4
+add_species		k_resist #5
+
+control_species		top	1.0  act_resist -1.0 0.0 0.0 	1 26 0.0
+
+
+set	i2 value 0
+set	i2 value 1 if i1 = 1 if y <= 11
+set	i2 value 2 if i1 = 1 if y > 1 if y <= 11
+set i2 value 4 if i1 = 1 if y > 14
+set i2 value 3 if i1 = 1 if x = 999 if y > 1 if y <= 11
+
+
+
+sector		no
+solve_style     tree 
+#solve_style     linear 
+
+# single-site, double-site, triple-site events
+
+event		2 fcc fcc act_resist vac 1.0 vac k_resist
+event		2 fcc fcc k_resist resist 0.02 resist resist
+event		2 fcc fcc k_resist top 0.02 top top
+event		2 fcc fcc k_resist vac 0.02 vac k_resist
+event		2 fcc fcc k_resist absorb 1e-12 vac absorb
+  
+#event		3 fcc fcc fcc act_resist act_resist vac 1.0 vac k_resist k_resist
+event		3 fcc fcc fcc k_resist vac vac  0.04 vac vac k_resist
+
+### act_resist diffuse to up left
+control_event	2 	0	-1.0 1.0 0.0	0.0 0.0 0.0  	2	1 26	
+control_event	2 	1	0.0 -1.0 0.0	0.0 0.0 0.0  	2	1 26
+control_event	2 	2	0.0 -1.0 0.0	0.0 0.0 0.0  	2	1 26		
+
+### resist moving down towards substrate due to gravity
+#control_event	3 	0	-1.0 1.0 0.0	0.0 0.0 0.0  	2	1 26	
+control_event	3 	0	0.0 -1.0 0.0	0.0 0.0 0.0  	2	1 26	
+
+# temperature in units of eV
+
+temperature	1.0
+
+diag_style      erbium stats yes &
+			list events vac resist top act_resist absorb k_resist d1 d2 d3 d4 d5 t1
+
+stats          1
+dump            dump2 1 dump.MCUT6 id i2 x y z
+
+run             1100

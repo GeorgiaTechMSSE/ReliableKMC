@@ -1,0 +1,5 @@
+#include "diag_cluster.h"
+#include "diag_diffusion.h"
+#include "diag_energy.h"
+#include "diag_erbium.h"
+#include "diag_propensity.h"

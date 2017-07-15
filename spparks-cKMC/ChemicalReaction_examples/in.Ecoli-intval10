@@ -1,0 +1,67 @@
+# SPPARKS chemistry application
+# LacZ and LacY proteins in E. coli
+# rates are based on the paper:
+# Andrzej M. Kierzek, "STOCKS: STOChastic Kinetic Simulations of
+# 	biochemical systems with Gillespie algorithm", Bioinformatics, 18(3):470-481, 2002
+
+seed		12345
+
+app_style	chemistry
+solve_style	linear
+
+volume		1.0e-22
+
+add_species		PLac
+add_species		RNAP
+add_species		PLacRNAP
+add_species		TrLacZ1
+add_species		TrLacZ2
+add_species		RbsLacZ
+add_species		TrLacY1
+add_species		TrLacY2
+add_species		RbsLacY
+add_species		Ribosome
+add_species		RbsRibosomeLacY
+add_species		RbsRibosomeLacZ
+add_species		TrRbsLacY
+add_species		TrRbsLacZ
+add_species		LacY
+add_species		LacZ
+add_species		dgrLacY
+add_species		dgrLacZ
+add_species		dgrRbsLacY
+add_species		dgrRbsLacZ
+add_species		lactose
+add_species		LacZlactose
+add_species		product
+
+
+add_reaction	1 PLac		RNAP 	0.153 		0.185		PLacRNAP
+add_reaction	2 PLacRNAP 	 		9 			11			PLac		RNAP
+add_reaction	3 PLacRNAP 			0.9		 	1.1		TrLacZ1
+add_reaction	4 TrLacZ1 	 		0.9			1.1		RbsLacZ		PLac	TrLacZ2		 	
+add_reaction	5 TrLacZ2			0.0135		0.0165 		TrLacY1
+add_reaction	6 TrLacY1 	 		0.9		 	1.1		RbsLacY 	TrLacY2
+add_reaction	7 TrLacY2 			0.324		0.396		RNAP 
+add_reaction	8 Ribosome 	RbsLacZ 0.153		0.185 		RbsRibosomeLacZ 
+add_reaction	9 Ribosome	RbsLacY	0.153		0.185 		RbsRibosomeLacY
+add_reaction   10 RbsRibosomeLacZ	0.405		0.495 		Ribosome	RbsLacZ 
+add_reaction   11 RbsRibosomeLacY	0.405		0.495 		Ribosome	RbsLacY
+add_reaction   12 RbsRibosomeLacZ	0.36		 	0.44		TrRbsLacZ	RbsLacZ
+add_reaction   13 RbsRibosomeLacY	0.36		 	0.44		TrRbsLacY	RbsLacY
+add_reaction   14 TrRbsLacZ			0.0135		0.0165 		LacZ 
+add_reaction   15 TrRbsLacY		 	0.0324		0.0396 		LacY
+add_reaction   16 LacZ				5.778e-5		7.062e-5 		dgrLacZ 
+add_reaction   17 LacY		 		5.778e-5		7.062e-5 		dgrLacY
+add_reaction   18 RbsLacZ			0.27		 	0.33		dgrRbsLacZ 
+add_reaction   19 RbsLacY		 	0.27		 	0.33		dgrRbsLacY
+add_reaction   20 LacZ		lactose	8.568e-5		10.472e-5		LacZlactose 
+add_reaction   21 LacZlactose		387.9			474.1		product		LacZ 
+add_reaction   22 LacY				12.6			15.4		lactose		LacY 
+
+count		PLac 		1
+count		RNAP		35
+count		Ribosome	350
+stats       100
+
+run		2000

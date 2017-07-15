@@ -1,0 +1,119 @@
+# SPPARKS laser sintering model test
+
+seed	        12345
+
+app_style       erbium
+
+#lattice        fcc/octa/tetra 1.0
+lattice         fcc 1.0
+
+#old
+region		box block 0 25 0 5 0 5
+create_box	box
+create_sites	box value i1 0 basis 1*4 1
+
+#new
+#region		tube cylinder x 4 4 4 0 50
+#create_box 	tube
+#create_sites	box value i1 0 basis 1*4 1
+
+add_species	vac
+add_species 	air
+add_species 	NP
+add_species	NP_ex
+
+#control_species		Ga_src	0.2  Ga+ 1.0 0.0 0.0	1 12,m
+#control_species		mold1	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+#control_species		mold2	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+
+#old
+#set		i2 value 0 if i1 = 1 if x <= 30
+#set 		i2 value 1 if i1 = 1 if x > 30 fraction 0.8
+#set 		i2 value 2 if i1 = 1 if x > 30 fraction 0.2
+
+#new
+set		i2 value 0 if i1 = 1 if x <= 15 fraction 0.9
+set 		i2 value 1 if i1 = 1 if x <= 15 fraction 0.1
+set 		i2 value 0 if i1 = 1 if x > 15 fraction 0.1
+set 		i2 value 1 if i1 = 1 if x > 15 fraction 0.6
+set 		i2 value 2 if i1 = 1 if x > 15 fraction 0.3
+# set 		i2 value 3 if i1 = 1
+
+sector		yes
+solve_style     tree 
+
+# define variables
+variable 	constant equal 1
+variable 	rate_1 equal 1E-3
+variable 	rate_2 equal 1E-3
+variable 	rate_3 equal 1E-3
+variable 	rate_4 equal 1E-3
+variable 	rate_5 equal 1E-3
+#variable 	rate_6 equal 1E-3
+variable 	rate_7 equal 1E-1
+variable 	rate_8 equal 1E-1
+variable 	rate_9 equal 1E-1
+variable 	rate_10 equal 1E-1
+variable 	rate_11 equal 1E-1
+#variable 	rate_12 equal 1E-1
+variable 	rate_13 equal 1E-1
+variable 	rate_14 equal 1E-1
+variable 	rate_15 equal 1E-1
+variable 	reverse_const equal 0.1
+variable 	temperature equal 20.0
+
+# single-site, double-site, triple-site events
+
+# laser sintering
+event		1 fcc NP ${rate_1} NP_ex
+event 		2 fcc fcc air NP ${rate_2} air NP_ex
+event		2 fcc fcc NP_ex NP ${rate_3} NP NP_ex
+event		2 fcc fcc NP_ex NP ${rate_4} NP_ex NP_ex
+event		3 fcc fcc fcc NP_ex NP_ex NP ${rate_5} NP_ex NP_ex NP_ex
+#event		4 fcc fcc fcc fcc NP_ex NP_ex NP_ex NP ${rate_6} NP_ex NP_ex NP_ex NP_ex
+
+# reverse reaction of laser sintering
+event		1 fcc NP_ex ${rate_1}*${reverse_const} NP
+event 		2 fcc fcc air NP_ex ${rate_2}*${reverse_const} air NP
+event		2 fcc fcc NP NP_ex ${rate_3}*${reverse_const} NP_ex NP
+event		2 fcc fcc NP_ex NP_ex ${rate_4}*${reverse_const} NP_ex NP
+event		3 fcc fcc fcc NP_ex NP_ex NP_ex ${rate_5}*${reverse_const} NP_ex NP_ex NP
+#event 		4 fcc fcc fcc fcc NP_ex NP_ex NP_ex NP_ex ${rate_6}*${reverse_const} NP_ex NP_ex NP_ex NP
+
+# diffusion
+event		2 fcc fcc vac air ${rate_7} air vac
+event		2 fcc fcc vac NP ${rate_8} NP vac
+event 		3 fcc fcc fcc NP vac air ${rate_9} air NP vac
+event 		3 fcc fcc fcc NP_ex vac NP_ex ${rate_10} NP_ex NP_ex vac
+event		4 fcc fcc fcc fcc vac air NP_ex NP_ex ${rate_11} air NP_ex NP_ex vac
+#event		4 fcc fcc fcc fcc vac vac NP_ex NP_ex ${rate_12} NP_ex NP_ex vac vac
+event		4 fcc fcc fcc fcc vac NP_ex NP_ex NP_ex ${rate_13} NP_ex NP_ex NP_ex vac
+
+# diffusion + laser sinter
+event 		2 fcc fcc vac NP ${rate_14} NP_ex vac
+event 		3 fcc fcc fcc NP vac air  ${rate_15} air NP_ex vac
+
+# reverse reaction of diffusion, if added, too many events are related, simulation time will become too long, also it has very low possibility
+
+control_event	2 	6	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+control_event	2 	7	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+#control_event	3 	2	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+#control_event	3 	3	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12	
+#control_event	4 	0	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	4 	1	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+control_event	2 	8	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+#control_event	3 	4	-1.0  0.0 0.0	0.0 0.0 0.0  60	1 12
+
+# temperature in units of eV
+# temperature sensitivity test
+temperature	${temperature}
+
+#diag_style      erbium stats yes &
+#		list air NP NP_ex vac events s1 d1 d2 d3 t1 q1 s2 d4 d5 d6 t2 q2 d7 d8 t3 t4 q3 q4 q5 d9 t5 
+diag_style      erbium stats yes &
+		list air NP NP_ex vac events s1 d1 d2 d3 t1 s2 d4 d5 d6 t2 d7 d8 t3 t4 q1 q2 d9 t5 
+
+stats           10.0
+dump            dump1 10.0 dump.laser.lammpstrj id i2 x y z
+
+run             100.0

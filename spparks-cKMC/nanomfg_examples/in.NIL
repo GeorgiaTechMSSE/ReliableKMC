@@ -1,0 +1,63 @@
+# SPPARKS Top-Down nanomanufacturing model test
+
+seed	        12345
+
+app_style       erbium
+
+#lattice         fcc/octa/tetra 1.0
+#lattice         fcc 1.0
+lattice			 sc/26n 1.0
+
+#region		box block 0 2 0 3 0 2
+region		box block 0 20 0 30 0 20
+create_box	box
+#create_sites	box value i1 0 basis 1*4 1 basis 5*8 2 basis 9* 3
+create_sites	box value i1 0 basis 1*4 1
+
+add_species		vac
+add_species 	substrate
+add_species		resist
+add_species		resist_gas
+add_species		mold1
+add_species		mold2
+add_species		Absorb
+
+control_species		mold1	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+control_species		mold2	2.0  vac 0.0 1.0 0.0 	1 12 0.0
+
+set	i2 value 0
+set	i2 value 1 if i1 = 1 if y <= 2 
+set	i2 value 2 if i1 = 1 if y > 2 if y < 20 
+set i2 value 4 if i1 = 1 if y > 14 if y <= 28 if x <= 6  
+set i2 value 5 if i1 = 1 if y > 20 if y <= 28 if x > 6 if x <= 14 
+set i2 value 4 if i1 = 1 if y > 14 if y <= 28 if x > 14  
+set i2 value 6 if i1 = 1 if y = 29
+set i2 value 3 if i1 = 1 if x = 0 if y = 15 if z = 0
+
+sector		no
+#solve_style     tree 
+solve_style     linear 
+
+# single-site, double-site, triple-site events
+
+event		2 fcc fcc resist_gas vac 1.0 vac resist_gas
+event		2 fcc fcc resist_gas Absorb 1e-12 vac Absorb
+
+event		3 fcc fcc fcc mold1 vac resist  1.0 mold1 resist_gas vac 
+event		3 fcc fcc fcc mold2 vac resist  1.0 mold2 resist_gas vac 
+event		3 fcc fcc fcc resist_gas resist resist  1.0 resist resist resist 
+
+#control_event	2 	0	0.0 -1.0 0.0	0.0 0.0 0.0  1	1 12	
+
+
+# temperature in units of eV
+
+temperature	1.0
+
+diag_style      erbium stats yes &
+			list events vac resist mold1 mold2 d1 d2 t1 t2 c1 c2
+
+stats          1
+dump            dump2 1 dump0.NIL id i2 x y z
+
+run             3
